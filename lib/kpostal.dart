@@ -3,12 +3,9 @@ library kpostal;
 export 'src/kpostal_model.dart';
 export 'src/constant.dart';
 
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:kpostal/src/kpostal_model.dart';
 
 class KpostalView extends StatefulWidget {
   static const String routeName = '/kpostal';
@@ -31,7 +28,7 @@ class KpostalView extends StatefulWidget {
   /// this callback function is called when user selects addresss.
   ///
   /// 유저가 주소를 선택했을 때 호출됩니다.
-  final void Function(Kpostal result)? callback;
+  final void Function(String result)? callback;
 
   /// build custom AppBar.
   ///
@@ -179,7 +176,7 @@ class _KpostalViewState extends State<KpostalView> {
                         allowedOriginRules: Set.from(["*"]),
                         onPostMessage:
                             (message, sourceOrigin, isMainFrame, replyProxy) =>
-                                handleMessage(message),
+                                handleMessage(message?.data),
                       ),
                     );
                   } else {
@@ -222,16 +219,16 @@ class _KpostalViewState extends State<KpostalView> {
   void handleMessage(String? message) async {
     try {
       if (message != null) {
-        Kpostal result = Kpostal.fromJson(jsonDecode(message));
+        // Kpostal result = Kpostal.fromJson(jsonDecode(message));
 
-        Location? _latLng = await result.latLng;
+        // Location? _latLng = await result.latLng;
 
-        if (_latLng != null) {
-          result.latitude = _latLng.latitude;
-          result.longitude = _latLng.longitude;
-        }
-        widget.callback?.call(result);
-        Navigator.of(context).pop(result);
+        // if (_latLng != null) {
+        //   result.latitude = _latLng.latitude;
+        //   result.longitude = _latLng.longitude;
+        // }
+        widget.callback?.call(message);
+        // Navigator.of(context).pop(result);
       } else {
         throw 'fail to load message : message is null';
       }
