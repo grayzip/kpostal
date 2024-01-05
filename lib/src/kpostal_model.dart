@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:geocoding/geocoding.dart';
 import 'package:kpostal/src/constant.dart';
 
 class Kpostal {
@@ -177,36 +174,5 @@ class Kpostal {
     }
     if (this.userLanguageType == 'E') return this.roadAddressEng;
     return this.roadAddress;
-  }
-
-  Future<List<Location>> searchLocation(String address) async {
-    try {
-      final List<Location> result = await locationFromAddress(address,
-          localeIdentifier: KpostalConst.localeKo);
-      log('LatLng Found from "$address"', name: KpostalConst.packageName);
-      return result;
-    }
-    // 경위도 조회 결과가 없는 경우
-    on NoResultFoundException {
-      log('LatLng NotFound from "$address"', name: KpostalConst.packageName);
-      return <Location>[];
-    } catch (_) {
-      return <Location>[];
-    }
-  }
-
-  Future<Location?> get latLng async {
-    try {
-      final List<Location> fromEngAddress = await searchLocation(addressEng);
-      if (fromEngAddress.isNotEmpty) {
-        return fromEngAddress.last;
-      }
-      final List<Location> fromAddress = await searchLocation(address);
-      return fromAddress.last;
-    } on StateError {
-      log('Location is not found from geocoding',
-          name: KpostalConst.packageName);
-      return null;
-    }
   }
 }
